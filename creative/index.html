@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative | Xiaodao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { display:['"Cormorant Garamond"','serif'], body:['"Noto Serif JP"','serif'], mono:['"DM Mono"','monospace'] },
+        colors: { ink:'#1a1714', stone:'#4a443e', sand:'#d6ccbf', cream:'#f4f0ea', paper:'#faf8f5', teal:{DEFAULT:'#2a6b6b'}, rust:{DEFAULT:'#b85c38'} }
+      }}
+    };
+  </script>
+  <style>
+    :root{--ink:#1a1714;--stone:#4a443e;--sand:#d6ccbf;--cream:#f4f0ea;--paper:#faf8f5;--teal:#2a6b6b;--rust:#b85c38;}
+    *,*::before,*::after{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Noto Serif JP',serif;background-color:var(--paper);color:var(--ink);overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6;}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    .reveal-delay-1{transition-delay:0.1s;} .reveal-delay-2{transition-delay:0.2s;} .reveal-delay-3{transition-delay:0.35s;}
+    #navbar{transition:background 0.4s,box-shadow 0.4s;}
+    #navbar.scrolled{background:rgba(250,248,245,0.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(26,23,20,0.08);}
+    .nav-link{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--stone);position:relative;transition:color 0.25s;}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--teal);transition:width 0.3s ease;}
+    .nav-link:hover{color:var(--teal);} .nav-link:hover::after{width:100%;}
+    .nav-link.active{color:var(--teal);} .nav-link.active::after{width:100%;}
+    .section-rule{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;}
+    .section-rule span.label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);white-space:nowrap;}
+    .section-rule::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--sand),transparent);}
+    .page-hero{padding-top:140px;padding-bottom:80px;position:relative;overflow:hidden;background:var(--ink);}
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(214,204,191,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(214,204,191,0.06) 1px,transparent 1px);background-size:60px 60px;}
+    /* ギャラリー */
+    .gallery-item{position:relative;overflow:hidden;border-radius:3px;cursor:pointer;}
+    .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease;display:block;}
+    .gallery-item:hover img{transform:scale(1.04);}
+    .gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,23,20,0.85) 0%,transparent 55%);opacity:0;transition:opacity 0.35s;display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;}
+    .gallery-item:hover .gallery-overlay{opacity:1;}
+    /* コードブロック */
+    .code-block{background:var(--ink);border-radius:4px;padding:1.25rem 1.5rem;font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--sand);line-height:1.8;overflow-x:auto;}
+    .code-block .kw{color:#5fa8a8;} .code-block .str{color:#c49a6c;} .code-block .cmt{color:#5a5450;}
+    .tag{font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:999px;}
+    footer{background:var(--ink);color:var(--sand);}
+    .footer-nav-link{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);transition:color 0.2s;}
+    .footer-nav-link:hover{color:var(--sand);}
+    #mobile-menu{transition:opacity 0.3s,transform 0.3s;}
+    #mobile-menu.hidden{opacity:0;transform:translateY(-10px);pointer-events:none;}
+    #mobile-menu.open{opacity:1;transform:none;pointer-events:all;}
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- HEADER -->
+  <header id="navbar" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 lg:px-16 py-5">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="flex items-baseline gap-2 group">
+        <span class="font-display text-xl font-light tracking-tight text-ink group-hover:text-teal transition-colors">Xiaodao</span>
+        <span class="font-mono text-[0.55rem] tracking-widest text-stone uppercase hidden sm:inline">小島 拓朗</span>
+      </a>
+      <ul class="hidden md:flex items-center gap-8">
+        <li><a href="../about/index.html"    class="nav-link">About</a></li>
+        <li><a href="../academic/index.html" class="nav-link">Academic</a></li>
+        <li><a href="../creative/index.html" class="nav-link active">Creative</a></li>
+        <li><a href="../personal/index.html" class="nav-link">Personal</a></li>
+        <li><a href="../index.html#contact"  class="nav-link border border-sand px-4 py-1.5 rounded hover:border-teal hover:text-teal transition-colors">Contact</a></li>
+      </ul>
+      <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-1">
+        <span class="w-5 h-px bg-ink block transition-all duration-300" id="bar1"></span>
+        <span class="w-5 h-px bg-ink block transition-all duration-300" id="bar2"></span>
+        <span class="w-3 h-px bg-ink block transition-all duration-300" id="bar3"></span>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-paper border-b border-sand px-6 py-6 shadow-lg">
+      <ul class="flex flex-col gap-5">
+        <li><a href="../about/index.html"    class="nav-link text-base" onclick="closeMobileMenu()">About</a></li>
+        <li><a href="../academic/index.html" class="nav-link text-base" onclick="closeMobileMenu()">Academic</a></li>
+        <li><a href="../creative/index.html" class="nav-link text-base active" onclick="closeMobileMenu()">Creative</a></li>
+        <li><a href="../personal/index.html" class="nav-link text-base" onclick="closeMobileMenu()">Personal</a></li>
+        <li><a href="../index.html#contact"  class="nav-link text-base" onclick="closeMobileMenu()">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PAGE HERO（ダーク背景） -->
+    <section class="page-hero px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <a href="../index.html" class="font-mono text-[0.6rem] tracking-widest uppercase text-stone hover:text-teal transition-colors">Home</a>
+          <span class="text-stone">/</span>
+          <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal">Creative</span>
+        </div>
+        <h1 class="font-display text-[clamp(2.5rem,7vw,6rem)] font-light text-cream leading-none mb-6 reveal reveal-delay-1">
+          Creative<br /><em class="italic text-teal">Projects</em>
+        </h1>
+        <p class="font-body font-light text-stone text-sm leading-loose max-w-xl reveal reveal-delay-2">
+          技術と物語の交差点で生まれるアウトプット。漫画・アプリ・コード——すべてが表現の形です。
+        </p>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         MANGA: 生活史マンガプロジェクト
+         ===================================================== -->
+    <section id="manga" class="py-24 px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">01 / Manga Project</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-4 reveal reveal-delay-1">生活史マンガ</h2>
+        <p class="font-body font-light text-stone text-sm leading-loose max-w-xl mb-12 reveal reveal-delay-2">
+          京都・鞍楽ハウディの店主たちへのインタビューをもとに、地域の生活史を漫画で記録するプロジェクト。
+          学術的なアーカイブとしての側面と、市民への発信を両立させることを目指しています。
+        </p>
+
+        <!-- ギャラリーグリッド -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+          <div class="gallery-item col-span-2 h-64 reveal">
+            <img src="https://placehold.co/800x500/1a1714/d6ccbf?text=生活史マンガ+作品1" alt="作品1" />
+            <div class="gallery-overlay">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-sand/60 mb-1">Episode 01</span>
+              <h3 class="font-display text-lg font-light text-white">【タイトルをここに記入】</h3>
+            </div>
+          </div>
+          <div class="gallery-item h-64 reveal reveal-delay-1">
+            <img src="https://placehold.co/400x500/2a6b6b/faf8f5?text=作品2" alt="作品2" />
+            <div class="gallery-overlay">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-sand/60 mb-1">Episode 02</span>
+              <h3 class="font-display text-lg font-light text-white">【タイトル】</h3>
+            </div>
+          </div>
+          <div class="gallery-item h-64 reveal reveal-delay-2">
+            <img src="https://placehold.co/400x500/4a443e/d6ccbf?text=作品3" alt="作品3" />
+            <div class="gallery-overlay">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-sand/60 mb-1">Episode 03</span>
+              <h3 class="font-display text-lg font-light text-white">【タイトル】</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-cream p-8 rounded-sm reveal">
+          <h3 class="font-display text-xl font-light text-ink mb-4">プロジェクト概要</h3>
+          <div class="grid md:grid-cols-2 gap-8 font-body text-sm text-stone font-light leading-loose">
+            <div>
+              <p class="mb-3">【プロジェクトの背景・動機をここに記入してください】</p>
+              <p>なぜ漫画という形式を選んだのか、誰に届けたいのか、学術的な意義は何か——ここに記述。</p>
+            </div>
+            <div>
+              <p class="mb-3">【展示・発表実績をここに記入してください】</p>
+              <p>開催場所、日時、来場者の反応など。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         APP: banaapro AI Manga App
+         ===================================================== -->
+    <section id="app" class="py-24 px-6 md:px-10 lg:px-16 bg-cream">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">02 / App Development</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-4 reveal reveal-delay-1">banaapro</h2>
+        <p class="font-body font-light text-stone text-sm leading-loose max-w-xl mb-12 reveal reveal-delay-2">
+          Gemini API を活用したAI漫画生成アプリ。テキストから自動的にコマ割り・セリフ・キャラクターを生成します。
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-12 items-start">
+          <!-- スクリーンショット -->
+          <div class="reveal">
+            <img src="https://placehold.co/700x480/1a1714/d6ccbf?text=banaapro+App+Screenshot" alt="banaapro" class="w-full rounded-sm border border-stone/20" />
+          </div>
+
+          <!-- 説明 -->
+          <div class="reveal reveal-delay-1">
+            <div class="space-y-6">
+              <div>
+                <h3 class="font-mono text-[0.65rem] tracking-widest uppercase text-teal mb-3">Tech Stack</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span class="font-mono text-[0.6rem] px-3 py-1 bg-teal/10 text-teal rounded">Gemini API</span>
+                  <span class="font-mono text-[0.6rem] px-3 py-1 bg-teal/10 text-teal rounded">JavaScript</span>
+                  <span class="font-mono text-[0.6rem] px-3 py-1 bg-teal/10 text-teal rounded">HTML/CSS</span>
+                  <span class="font-mono text-[0.6rem] px-3 py-1 bg-teal/10 text-teal rounded">【他の技術】</span>
+                </div>
+              </div>
+              <div>
+                <h3 class="font-mono text-[0.65rem] tracking-widest uppercase text-teal mb-3">Overview</h3>
+                <p class="font-body text-sm text-stone font-light leading-loose">
+                  【アプリの詳細説明をここに記入してください】<br>
+                  開発の動機、主要機能、工夫した点、今後の展望など。
+                </p>
+              </div>
+              <div class="flex gap-3">
+                <a href="#" class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-widest uppercase text-teal border border-teal/30 px-4 py-2 rounded hover:bg-teal/5 transition-colors">GitHub →</a>
+                <a href="#" class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-widest uppercase text-stone border border-sand px-4 py-2 rounded hover:border-teal/30 transition-colors">Demo →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         CODE: プログラミング・技術ナレッジ
+         ===================================================== -->
+    <section id="code" class="py-24 px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">03 / Programming & Data</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-4 reveal reveal-delay-1">技術ナレッジベース</h2>
+        <p class="font-body font-light text-stone text-sm leading-loose max-w-xl mb-12 reveal reveal-delay-2">
+          MATLAB・Python・LaTeXの実装メモ、研究ワークフロー、データ解析の知見をまとめています。
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- MATLAB -->
+          <div class="border border-sand rounded-sm overflow-hidden reveal">
+            <div class="bg-ink p-4 flex items-center gap-2">
+              <div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rust/60"></span><span class="w-2.5 h-2.5 rounded-full bg-sand/40"></span><span class="w-2.5 h-2.5 rounded-full bg-teal/60"></span></div>
+              <span class="font-mono text-[0.6rem] text-stone">storm_surge_analysis.m</span>
+            </div>
+            <div class="code-block rounded-none">
+              <span class="cmt">% 高潮ピーク値の抽出</span><br>
+              <span class="kw">load</span>(<span class="str">'adcirc_output.mat'</span>);<br>
+              peak_surge = <span class="kw">max</span>(zeta, [], <span class="str">2</span>);<br>
+              <span class="cmt">% 閾値超過確率の計算</span><br>
+              threshold = <span class="str">1.5</span>;<br>
+              exceed = peak_surge &gt; threshold;<br>
+              prob = <span class="kw">sum</span>(exceed) / N;
+            </div>
+            <div class="p-4">
+              <h3 class="font-mono text-[0.65rem] tracking-widest uppercase text-teal mb-2">MATLAB</h3>
+              <p class="font-body text-xs text-stone font-light leading-loose">ADCIRCデータ処理、統計解析、可視化スクリプト集</p>
+              <a href="#" class="inline-flex items-center gap-1 mt-3 font-mono text-[0.6rem] tracking-widest uppercase text-teal hover:gap-2 transition-all">記事一覧 →</a>
+            </div>
+          </div>
+
+          <!-- Python -->
+          <div class="border border-sand rounded-sm overflow-hidden reveal reveal-delay-1">
+            <div class="bg-ink p-4 flex items-center gap-2">
+              <div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rust/60"></span><span class="w-2.5 h-2.5 rounded-full bg-sand/40"></span><span class="w-2.5 h-2.5 rounded-full bg-teal/60"></span></div>
+              <span class="font-mono text-[0.6rem] text-stone">risk_map.py</span>
+            </div>
+            <div class="code-block rounded-none">
+              <span class="kw">import</span> numpy <span class="kw">as</span> np<br>
+              <span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt<br>
+              <span class="cmt"># リスクマップの生成</span><br>
+              <span class="kw">def</span> plot_risk_map(data, thresh):<br>
+              &nbsp;&nbsp;risk = np.where(data &gt; thresh, <span class="str">1</span>, <span class="str">0</span>)<br>
+              &nbsp;&nbsp;plt.imshow(risk, cmap=<span class="str">'RdYlGn_r'</span>)<br>
+              &nbsp;&nbsp;<span class="kw">return</span> risk
+            </div>
+            <div class="p-4">
+              <h3 class="font-mono text-[0.65rem] tracking-widest uppercase text-teal mb-2">Python</h3>
+              <p class="font-body text-xs text-stone font-light leading-loose">データ可視化、GIS処理、テキストマイニング</p>
+              <a href="#" class="inline-flex items-center gap-1 mt-3 font-mono text-[0.6rem] tracking-widest uppercase text-teal hover:gap-2 transition-all">記事一覧 →</a>
+            </div>
+          </div>
+
+          <!-- LaTeX -->
+          <div class="border border-sand rounded-sm overflow-hidden reveal reveal-delay-2">
+            <div class="bg-ink p-4 flex items-center gap-2">
+              <div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rust/60"></span><span class="w-2.5 h-2.5 rounded-full bg-sand/40"></span><span class="w-2.5 h-2.5 rounded-full bg-teal/60"></span></div>
+              <span class="font-mono text-[0.6rem] text-stone">thesis_template.tex</span>
+            </div>
+            <div class="code-block rounded-none">
+              \documentclass[12pt]{article}<br>
+              \usepackage{<span class="str">amsmath</span>}<br>
+              \usepackage{<span class="str">graphicx</span>}<br>
+              <span class="cmt">% 高潮リスク式</span><br>
+              \begin{equation}<br>
+              &nbsp;&nbsp;R = \int P(h) \cdot V(h) \, dh<br>
+              \end{equation}
+            </div>
+            <div class="p-4">
+              <h3 class="font-mono text-[0.65rem] tracking-widest uppercase text-teal mb-2">LaTeX</h3>
+              <p class="font-body text-xs text-stone font-light leading-loose">論文テンプレート、数式組版、図表管理</p>
+              <a href="#" class="inline-flex items-center gap-1 mt-3 font-mono text-[0.6rem] tracking-widest uppercase text-teal hover:gap-2 transition-all">記事一覧 →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="py-12 px-6 md:px-10 lg:px-16 border-t border-stone/30">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <a href="../index.html" class="font-display text-xl font-light text-cream hover:text-teal transition-colors">Xiaodao</a>
+        <p class="font-mono text-[0.6rem] tracking-widest text-stone mt-1">Engineer · Researcher · Creator</p>
+      </div>
+      <div class="flex flex-wrap gap-6">
+        <a href="../about/index.html"    class="footer-nav-link">About</a>
+        <a href="../academic/index.html" class="footer-nav-link">Academic</a>
+        <a href="../creative/index.html" class="footer-nav-link" style="color:var(--teal)">Creative</a>
+        <a href="../personal/index.html" class="footer-nav-link">Personal</a>
+        <a href="../index.html#contact"  class="footer-nav-link">Contact</a>
+      </div>
+      <p class="font-mono text-[0.6rem] tracking-wider text-stone">© 2025 Xiaodao</p>
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1 = document.getElementById('bar1'), bar2 = document.getElementById('bar2'), bar3 = document.getElementById('bar3');
+    let menuOpen = false;
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      if (menuOpen) { mobileMenu.classList.remove('hidden'); requestAnimationFrame(() => mobileMenu.classList.add('open')); bar1.style.transform='translateY(6px) rotate(45deg)'; bar2.style.opacity='0'; bar3.style.width='20px'; bar3.style.transform='translateY(-6px) rotate(-45deg)'; }
+      else { closeMobileMenu(); }
+    });
+    function closeMobileMenu() { menuOpen=false; mobileMenu.classList.remove('open'); setTimeout(()=>mobileMenu.classList.add('hidden'),300); bar1.style.transform=''; bar2.style.opacity=''; bar3.style.width=''; bar3.style.transform=''; }
+    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

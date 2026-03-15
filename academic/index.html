@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic | Xiaodao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+JP:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { display:['"Cormorant Garamond"','serif'], body:['"Noto Serif JP"','serif'], mono:['"DM Mono"','monospace'] },
+        colors: { ink:'#1a1714', stone:'#4a443e', sand:'#d6ccbf', cream:'#f4f0ea', paper:'#faf8f5', teal:{DEFAULT:'#2a6b6b',light:'#3d8f8f'}, rust:{DEFAULT:'#b85c38'} }
+      }}
+    };
+  </script>
+  <style>
+    :root{--ink:#1a1714;--stone:#4a443e;--sand:#d6ccbf;--cream:#f4f0ea;--paper:#faf8f5;--teal:#2a6b6b;--rust:#b85c38;}
+    *,*::before,*::after{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Noto Serif JP',serif;background-color:var(--paper);color:var(--ink);overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.6;}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+    .reveal-delay-1{transition-delay:0.1s;} .reveal-delay-2{transition-delay:0.2s;} .reveal-delay-3{transition-delay:0.35s;}
+    #navbar{transition:background 0.4s,box-shadow 0.4s;}
+    #navbar.scrolled{background:rgba(250,248,245,0.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 rgba(26,23,20,0.08);}
+    .nav-link{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--stone);position:relative;transition:color 0.25s;}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--teal);transition:width 0.3s ease;}
+    .nav-link:hover{color:var(--teal);} .nav-link:hover::after{width:100%;}
+    .nav-link.active{color:var(--teal);} .nav-link.active::after{width:100%;}
+    .section-rule{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;}
+    .section-rule span.label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);white-space:nowrap;}
+    .section-rule::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--sand),transparent);}
+    /* ページヘッダー */
+    .page-hero{padding-top:140px;padding-bottom:80px;position:relative;overflow:hidden;}
+    .page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--sand) 1px,transparent 1px),linear-gradient(90deg,var(--sand) 1px,transparent 1px);background-size:60px 60px;opacity:0.15;}
+    /* カード */
+    .card{background:white;border:1px solid var(--sand);border-radius:4px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;}
+    .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(26,23,20,0.08);border-color:rgba(42,107,107,0.25);}
+    /* タイムライン */
+    .timeline-item{position:relative;padding-left:2rem;border-left:1px solid var(--sand);}
+    .timeline-item::before{content:'';position:absolute;left:-4px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--teal);}
+    /* タグ */
+    .tag{font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:999px;}
+    /* フッター */
+    footer{background:var(--ink);color:var(--sand);}
+    .footer-nav-link{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--stone);transition:color 0.2s;}
+    .footer-nav-link:hover{color:var(--sand);}
+    .social-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid var(--stone);border-radius:50%;color:var(--stone);transition:border-color 0.25s,color 0.25s;}
+    .social-btn:hover{border-color:var(--sand);color:var(--sand);}
+    #mobile-menu{transition:opacity 0.3s,transform 0.3s;}
+    #mobile-menu.hidden{opacity:0;transform:translateY(-10px);pointer-events:none;}
+    #mobile-menu.open{opacity:1;transform:none;pointer-events:all;}
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- =====================================================
+       HEADER（共通ナビ）
+       ===================================================== -->
+  <header id="navbar" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 lg:px-16 py-5">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="flex items-baseline gap-2 group">
+        <span class="font-display text-xl font-light tracking-tight text-ink group-hover:text-teal transition-colors">Xiaodao</span>
+        <span class="font-mono text-[0.55rem] tracking-widest text-stone uppercase hidden sm:inline">小島 拓朗</span>
+      </a>
+      <ul class="hidden md:flex items-center gap-8">
+        <li><a href="../about/index.html"    class="nav-link">About</a></li>
+        <li><a href="../academic/index.html" class="nav-link active">Academic</a></li>
+        <li><a href="../creative/index.html" class="nav-link">Creative</a></li>
+        <li><a href="../personal/index.html" class="nav-link">Personal</a></li>
+        <li><a href="../index.html#contact"  class="nav-link border border-sand px-4 py-1.5 rounded hover:border-teal hover:text-teal transition-colors">Contact</a></li>
+      </ul>
+      <button id="menu-toggle" class="md:hidden flex flex-col gap-1.5 p-1">
+        <span class="w-5 h-px bg-ink block transition-all duration-300" id="bar1"></span>
+        <span class="w-5 h-px bg-ink block transition-all duration-300" id="bar2"></span>
+        <span class="w-3 h-px bg-ink block transition-all duration-300" id="bar3"></span>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-paper border-b border-sand px-6 py-6 shadow-lg">
+      <ul class="flex flex-col gap-5">
+        <li><a href="../about/index.html"    class="nav-link text-base" onclick="closeMobileMenu()">About</a></li>
+        <li><a href="../academic/index.html" class="nav-link text-base active" onclick="closeMobileMenu()">Academic</a></li>
+        <li><a href="../creative/index.html" class="nav-link text-base" onclick="closeMobileMenu()">Creative</a></li>
+        <li><a href="../personal/index.html" class="nav-link text-base" onclick="closeMobileMenu()">Personal</a></li>
+        <li><a href="../index.html#contact"  class="nav-link text-base" onclick="closeMobileMenu()">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- =====================================================
+         PAGE HERO: ページタイトル
+         ===================================================== -->
+    <section class="page-hero px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <a href="../index.html" class="font-mono text-[0.6rem] tracking-widest uppercase text-stone hover:text-teal transition-colors">Home</a>
+          <span class="text-sand">/</span>
+          <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal">Academic</span>
+        </div>
+        <h1 class="font-display text-[clamp(2.5rem,7vw,6rem)] font-light text-ink leading-none mb-6 reveal reveal-delay-1">
+          Academic<br /><em class="italic text-teal">& Professional</em>
+        </h1>
+        <p class="font-body font-light text-stone text-sm leading-loose max-w-xl reveal reveal-delay-2">
+          土木・海岸工学の研究者として、また国際的なフィールドで活動するプロフェッショナルとして。
+          研究・キャリア・グローバル経験の記録です。
+        </p>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         RESEARCH: 研究テーマ
+         ===================================================== -->
+    <section id="research" class="py-24 px-6 md:px-10 lg:px-16 bg-cream">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">01 / Research</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-12 reveal reveal-delay-1">研究テーマ</h2>
+
+        <!-- メイン研究カード -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="card reveal">
+            <img src="https://placehold.co/700x380/2a6b6b/faf8f5?text=Storm+Surge+Risk+Modeling" alt="高潮リスクモデリング" class="w-full h-52 object-cover" />
+            <div class="p-7">
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="tag bg-teal/10 text-teal">ADCIRC</span>
+                <span class="tag bg-teal/10 text-teal">d4PDF</span>
+                <span class="tag bg-teal/10 text-teal">Python</span>
+                <span class="tag bg-teal/10 text-teal">MATLAB</span>
+              </div>
+              <h3 class="font-display text-2xl font-light text-ink mb-3">高潮・沿岸洪水リスクモデリング</h3>
+              <p class="font-body text-sm text-stone font-light leading-loose">
+                d4PDF（大規模気候アンサンブルデータ）とADCIRC（高精度海洋モデル）を組み合わせた
+                全球規模の高潮リスク評価手法を開発。気候変動の各シナリオ（+1.5℃・+2℃・+4℃）
+                における沿岸脆弱性の定量的評価に取り組んでいます。
+              </p>
+              <p class="font-body text-sm text-stone font-light leading-loose mt-3">
+                【研究概要をここに追記してください】<br>
+                例：使用データ、シミュレーション手法、得られた知見など。
+              </p>
+            </div>
+          </div>
+
+          <div class="card reveal reveal-delay-1">
+            <img src="https://placehold.co/700x380/1e5050/d6ccbf?text=Seismic+Optimization" alt="耐震最適化" class="w-full h-52 object-cover" />
+            <div class="p-7">
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="tag bg-teal/10 text-teal">MATLAB</span>
+                <span class="tag bg-teal/10 text-teal">構造解析</span>
+                <span class="tag bg-teal/10 text-teal">最適化</span>
+              </div>
+              <h3 class="font-display text-2xl font-light text-ink mb-3">高層建築のアウトリガー・ベルトトラス耐震最適化</h3>
+              <p class="font-body text-sm text-stone font-light leading-loose">
+                修士論文テーマ。超高層建築物のアウトリガーおよびベルトトラスシステムの
+                配置最適化により、地震動に対する構造性能の向上を目指す研究。
+              </p>
+              <p class="font-body text-sm text-stone font-light leading-loose mt-3">
+                【研究概要をここに追記してください】<br>
+                例：解析手法、最適化アルゴリズム、設計変数の設定など。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         GLOBAL: 国際経験・プログラム
+         ===================================================== -->
+    <section id="global" class="py-24 px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">02 / Global Experience</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-12 reveal reveal-delay-1">国際経験</h2>
+
+        <div class="space-y-8">
+          <!-- 経験1 -->
+          <div class="timeline-item pb-8 reveal">
+            <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal block mb-2">2024 — USA</span>
+            <h3 class="font-display text-xl font-light text-ink mb-2">Kingfisher グローバルリーダーシッププログラム</h3>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl">
+              ワシントンD.C.・ニューヨーク・サンフランシスコを訪問。
+              政策立案者・企業リーダー・研究者との対話を通じ、
+              日米関係・リーダーシップ・社会変革について学んだ集中プログラム。
+            </p>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl mt-2">
+              【詳細をここに追記してください】訪問先、学んだこと、印象に残ったエピソードなど。
+            </p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="tag bg-rust/10 text-rust">Leadership</span>
+              <span class="tag bg-rust/10 text-rust">US-Japan Relations</span>
+              <span class="tag bg-rust/10 text-rust">Policy</span>
+            </div>
+          </div>
+
+          <!-- 経験2 -->
+          <div class="timeline-item pb-8 reveal reveal-delay-1">
+            <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal block mb-2">2024 — Germany</span>
+            <h3 class="font-display text-xl font-light text-ink mb-2">Göttingen Intercultural Connections (GIC) 仮想交流プログラム</h3>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl">
+              ゲッティンゲン大学との異文化交流プログラム。
+              異なる文化的背景を持つ学生との対話を通じた相互理解の深化。
+            </p>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl mt-2">
+              【詳細をここに追記してください】テーマ、参加国、印象的な議論など。
+            </p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="tag bg-rust/10 text-rust">Intercultural</span>
+              <span class="tag bg-rust/10 text-rust">Germany</span>
+            </div>
+          </div>
+
+          <!-- 経験3 -->
+          <div class="timeline-item pb-8 reveal reveal-delay-2">
+            <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal block mb-2">2023 — Philippines</span>
+            <h3 class="font-display text-xl font-light text-ink mb-2">パシグ川・マリキナ川河川改修OJT</h3>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl">
+              フィリピン・マニラでの河川改修プロジェクトに関する現地研修を手配・調整。
+              現地の洪水リスク対策と社会実装の現場を学んだ。
+            </p>
+            <p class="font-body text-sm text-stone font-light leading-loose max-w-2xl mt-2">
+              【詳細をここに追記してください】現地の状況、課題、学びなど。
+            </p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="tag bg-rust/10 text-rust">Flood Risk</span>
+              <span class="tag bg-rust/10 text-rust">OJT</span>
+              <span class="tag bg-rust/10 text-rust">Philippines</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         PUBLICATIONS: 論文・発表
+         ===================================================== -->
+    <section id="publications" class="py-24 px-6 md:px-10 lg:px-16 bg-cream">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">03 / Publications</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-12 reveal reveal-delay-1">論文・発表</h2>
+
+        <div class="space-y-4">
+          <!-- 論文1（ダミー） -->
+          <div class="p-6 border border-sand rounded-sm hover:border-teal/40 transition-colors reveal">
+            <div class="flex items-start gap-4">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-teal mt-1 flex-shrink-0">2025</span>
+              <div>
+                <h4 class="font-body text-sm font-light text-ink leading-relaxed">
+                  【論文タイトルをここに記入】Global Assessment of Storm Surge Risk under Climate Change Scenarios Using Large Ensemble Simulations
+                </h4>
+                <p class="font-mono text-[0.6rem] tracking-widest text-stone mt-2">Journal of Coastal Engineering · Vol.XX · pp.XXX–XXX</p>
+                <div class="flex gap-2 mt-2">
+                  <span class="tag bg-teal/10 text-teal">Peer-reviewed</span>
+                  <a href="#" class="tag bg-stone/10 text-stone hover:bg-teal/10 hover:text-teal transition-colors">PDF →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 学会発表1（ダミー） -->
+          <div class="p-6 border border-sand rounded-sm hover:border-teal/40 transition-colors reveal reveal-delay-1">
+            <div class="flex items-start gap-4">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-stone mt-1 flex-shrink-0">2024</span>
+              <div>
+                <h4 class="font-body text-sm font-light text-ink leading-relaxed">
+                  【発表タイトルをここに記入】高潮リスクの全球評価に向けた大規模気候アンサンブルの活用
+                </h4>
+                <p class="font-mono text-[0.6rem] tracking-widest text-stone mt-2">土木学会 年次学術講演会 · 口頭発表</p>
+                <div class="flex gap-2 mt-2">
+                  <span class="tag bg-stone/10 text-stone">Conference</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 追加用ダミー -->
+          <div class="p-6 border border-dashed border-sand rounded-sm reveal reveal-delay-2">
+            <p class="font-mono text-[0.6rem] tracking-widest uppercase text-stone/50 text-center">
+              ＋ 論文・発表をここに追加してください
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         WORKS: フリーランス実績
+         ===================================================== -->
+    <section id="works" class="py-24 px-6 md:px-10 lg:px-16">
+      <div class="max-w-7xl mx-auto">
+        <div class="section-rule reveal"><span class="label">04 / Works</span></div>
+        <h2 class="font-display text-3xl md:text-4xl font-light text-ink mb-12 reveal reveal-delay-1">フリーランス実績</h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- 実績1 -->
+          <div class="card reveal">
+            <div class="h-40 bg-stone/5 flex items-center justify-center">
+              <img src="https://placehold.co/400x200/f4f0ea/4a443e?text=Web+Design+Project" alt="Webデザイン" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-5">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-stone">Web Design</span>
+              <h3 class="font-display text-lg font-light text-ink mt-2 mb-2">【クライアント名または案件名】</h3>
+              <p class="font-body text-xs text-stone font-light leading-loose">案件の概要をここに記入。制作したもの、使用技術、工夫した点など。</p>
+              <div class="flex flex-wrap gap-1 mt-3">
+                <span class="tag bg-stone/10 text-stone">HTML/CSS</span>
+                <span class="tag bg-stone/10 text-stone">JavaScript</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 実績2 -->
+          <div class="card reveal reveal-delay-1">
+            <div class="h-40 bg-stone/5 flex items-center justify-center">
+              <img src="https://placehold.co/400x200/f4f0ea/b85c38?text=Writing+Project" alt="ライティング" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-5">
+              <span class="font-mono text-[0.6rem] tracking-widest uppercase text-rust">Writing</span>
+              <h3 class="font-display text-lg font-light text-ink mt-2 mb-2">【記事・コンテンツ案件名】</h3>
+              <p class="font-body text-xs text-stone font-light leading-loose">案件の概要をここに記入。執筆テーマ、媒体、本数など。</p>
+              <div class="flex flex-wrap gap-1 mt-3">
+                <span class="tag bg-rust/10 text-rust">Article</span>
+                <span class="tag bg-rust/10 text-rust">SEO</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 追加用 -->
+          <div class="border border-dashed border-sand rounded-sm flex items-center justify-center h-64 reveal reveal-delay-2">
+            <p class="font-mono text-[0.6rem] tracking-widest uppercase text-stone/40 text-center">＋ 実績を追加</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       FOOTER（共通）
+       ===================================================== -->
+  <footer class="py-12 px-6 md:px-10 lg:px-16 border-t border-stone/30">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <a href="../index.html" class="font-display text-xl font-light text-cream hover:text-teal transition-colors">Xiaodao</a>
+        <p class="font-mono text-[0.6rem] tracking-widest text-stone mt-1">Engineer · Researcher · Creator</p>
+      </div>
+      <div class="flex flex-wrap gap-6">
+        <a href="../about/index.html"    class="footer-nav-link">About</a>
+        <a href="../academic/index.html" class="footer-nav-link" style="color:var(--teal)">Academic</a>
+        <a href="../creative/index.html" class="footer-nav-link">Creative</a>
+        <a href="../personal/index.html" class="footer-nav-link">Personal</a>
+        <a href="../index.html#contact"  class="footer-nav-link">Contact</a>
+      </div>
+      <p class="font-mono text-[0.6rem] tracking-wider text-stone">© 2025 Xiaodao</p>
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1 = document.getElementById('bar1'), bar2 = document.getElementById('bar2'), bar3 = document.getElementById('bar3');
+    let menuOpen = false;
+    menuToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      if (menuOpen) {
+        mobileMenu.classList.remove('hidden');
+        requestAnimationFrame(() => mobileMenu.classList.add('open'));
+        bar1.style.transform='translateY(6px) rotate(45deg)'; bar2.style.opacity='0';
+        bar3.style.width='20px'; bar3.style.transform='translateY(-6px) rotate(-45deg)';
+      } else { closeMobileMenu(); }
+    });
+    function closeMobileMenu() {
+      menuOpen = false; mobileMenu.classList.remove('open');
+      setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+      bar1.style.transform=''; bar2.style.opacity=''; bar3.style.width=''; bar3.style.transform='';
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
